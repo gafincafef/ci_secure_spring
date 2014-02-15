@@ -32,10 +32,17 @@
 		</constructor-arg>
 	</bean>
 
-	<!-- Security context storing filter -->
+	<!-- Security context storing filter: 
+	This filter populates Security Context Holder from the repository prior to each 
+	request. After the request completed, this filter stores back the Security Context Holder
+	in the repository and clear the context holder
+	 -->
 	<bean id="securityContextFilter"
 		class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
-		<property name="securityContextRepository" ref="securityContextRepository" />
+		<constructor-arg index="0">
+			<bean class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
+			</bean>
+		</constructor-arg>
 	</bean>
 	
 	<!-- Simple logout filter -->
@@ -102,10 +109,6 @@
 		</property>
 		<property name="authenticationManager" ref="authenticationManager" />
 		<property name="accessDecisionManager" ref="accessDecisionManager" />
-	</bean>
-
-	<bean id="securityContextRepository"
-		class="org.springframework.security.web.context.HttpSessionSecurityContextRepository">
 	</bean>
 
 	<!-- AuthenticationManager -->
